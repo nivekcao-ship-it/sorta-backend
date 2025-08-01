@@ -1,0 +1,63 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "APIs for crucial toolkits such as describing image content for bedrock agent.",
+    "version": "1.0.0",
+    "description": "APIs for crucial toolkits such as describing image content for bedrock agent."
+  },
+  "paths": {
+    "/describe-image": {
+      "post": {
+        "summary": "Analyze an uploaded image to detect items, room type, and storage areas",
+        "description": "Analyze an uploaded image to detect items, room type, and storage areas. Use this when user uploads a photo.",
+        "operationId": "describeImage",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "imageUrl": {
+                    "description": "list of image urls",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "description": "image url."
+                    }
+                  }
+                },
+                "required": ["imageUrl"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Image description",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "imageUrl": {
+                        "type": "string",
+                        "description": "Original image url."
+                      },
+                      "imageDescription": {
+                        "type": "string",
+                        "description": "The image decription."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

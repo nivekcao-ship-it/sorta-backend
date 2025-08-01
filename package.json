@@ -1,0 +1,20 @@
+{
+  "name": "sorta-service",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build:cdk && npm run build:java",
+    "build:cdk": "cd packages/SortaServiceCDK && npm run build",
+    "build:java": "cd packages/SortaService && ./gradlew build",
+    "test": "npm run test:cdk && npm run test:kotlin",
+    "test:cdk": "cd packages/SortaServiceCDK && npm test",
+    "test:java": "cd packages/SortaService && ./gradlew test",
+    "deploy": "cd packages/SortaServiceCDK && npm run deploy"
+  },
+  "devDependencies": {
+    "lerna": "^6.0.0"
+  }
+}
