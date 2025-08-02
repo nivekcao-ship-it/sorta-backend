@@ -58,6 +58,7 @@ export class SortaServiceStack extends cdk.Stack {
         SESSIONS_TABLE_NAME: sessionsTable.table.tableName,
       },
       policies: [
+        PolicyBuilder.bedrockPolicy(this.region, this.account),
         PolicyBuilder.s3ReadWritePolicy(imagesBucket.bucket),
         PolicyBuilder.dynamoDbReadWritePolicy(usersTable.table),
         PolicyBuilder.dynamoDbReadWritePolicy(roomsTable.table),

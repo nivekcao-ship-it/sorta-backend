@@ -17,6 +17,17 @@ export class PolicyBuilder {
     });
   }
 
+  static bedrockPolicy(region: string, account: string): iam.PolicyStatement {
+    return new iam.PolicyStatement({
+      actions: [
+        'bedrock:InvokeModel'
+      ],
+      resources: [
+        `arn:aws:bedrock:${region}::foundation-model/*`
+      ]
+    });
+  }
+
   static s3BucketPolicy(bucket: s3.Bucket, permissions: string[]): iam.PolicyStatement {
     return new iam.PolicyStatement({
       actions: permissions,

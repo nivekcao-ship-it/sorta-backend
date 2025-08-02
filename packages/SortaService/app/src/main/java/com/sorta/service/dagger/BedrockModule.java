@@ -1,5 +1,6 @@
 package com.sorta.service.dagger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import com.sorta.service.workflow.AgentMessageAugmentationWorkflow;
 import com.sorta.service.workflow.ImageInputWorkflow;
@@ -16,7 +17,7 @@ import javax.inject.Singleton;
 import java.util.List;
 
 @Module
-public class AgentModule {
+public class BedrockModule {
 
     @Provides
     @Singleton
@@ -61,7 +62,7 @@ public class AgentModule {
 
     @Provides
     @Singleton
-    public List<AgentMessageAugmentationWorkflow> provideMessageAugmentationWorkflow() {
-        return ImmutableList.of(new ImageInputWorkflow());
+    public List<AgentMessageAugmentationWorkflow> provideMessageAugmentationWorkflow(final ObjectMapper objectMapper) {
+        return ImmutableList.of(new ImageInputWorkflow(objectMapper));
     }
 }

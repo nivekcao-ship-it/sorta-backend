@@ -5,7 +5,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.sorta.service.dagger.AppComponent;
-import com.sorta.service.exceptions.ExceptionTranslator;
+import com.sorta.service.exceptions.APIGatewayExceptionTranslator;
 import com.sorta.service.exceptions.NotFoundException;
 import lombok.extern.log4j.Log4j2;
 
@@ -21,7 +21,8 @@ public class SortaServiceHandler implements RequestHandler<APIGatewayProxyReques
     @Inject ImageUploadHandler imageUploadHandler;
     @Inject UserProfileHandler userProfileHandler;
     @Inject SandboxHandler sandboxHandler;
-    @Inject ExceptionTranslator exceptionTranslator;
+    @Inject
+    APIGatewayExceptionTranslator APIGatewayExceptionTranslator;
 
     public SortaServiceHandler() {
         // Initialize dependency injection in constructor
@@ -49,7 +50,7 @@ public class SortaServiceHandler implements RequestHandler<APIGatewayProxyReques
             }
         } catch (Exception e) {
             log.error("Error processing request: {}", e.getMessage(), e);
-            return exceptionTranslator.translateException(e);
+            return APIGatewayExceptionTranslator.translateException(e);
         }
     }
 }

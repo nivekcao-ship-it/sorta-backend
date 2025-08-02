@@ -105,7 +105,7 @@ public class DescribeImageProcessor {
             .build();
 
         // Invoke Claude
-        log.debug("Invoking Claude model for image description {}", objectMapper.writeValueAsString(requestBody));
+        log.debug("Invoking Claude model for image description");
             
         final InvokeModelResponse response = bedrockClient.invokeModel(request);
         log.debug("Received response from Claude model");

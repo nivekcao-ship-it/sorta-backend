@@ -15,7 +15,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Module
-public class ImageModule {
+public class S3Module {
     
     @Provides
     @Singleton
