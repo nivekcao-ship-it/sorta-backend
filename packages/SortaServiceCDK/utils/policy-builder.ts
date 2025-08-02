@@ -7,10 +7,12 @@ export class PolicyBuilder {
   static bedrockAgentPolicy(region: string, account: string, agentId: string, agentAliasId: string): iam.PolicyStatement {
     return new iam.PolicyStatement({
       actions: [
-        'bedrock:InvokeAgent'
+        'bedrock:InvokeAgent',
+        'bedrock:InvokeModel'
       ],
       resources: [
-        `arn:aws:bedrock:${region}:${account}:agent-alias/${agentId}/${agentAliasId}`
+        `arn:aws:bedrock:${region}:${account}:agent-alias/${agentId}/${agentAliasId}`,
+        `arn:aws:bedrock:${region}::foundation-model/*`
       ]
     });
   }

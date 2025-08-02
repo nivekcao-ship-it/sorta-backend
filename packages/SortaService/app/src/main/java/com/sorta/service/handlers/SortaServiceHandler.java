@@ -4,7 +4,6 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sorta.service.dagger.AppComponent;
 import com.sorta.service.exceptions.ExceptionTranslator;
 import com.sorta.service.exceptions.NotFoundException;
@@ -21,6 +20,7 @@ public class SortaServiceHandler implements RequestHandler<APIGatewayProxyReques
     @Inject SortaAgentHandler sortaAgentHandler;
     @Inject ImageUploadHandler imageUploadHandler;
     @Inject UserProfileHandler userProfileHandler;
+    @Inject SandboxHandler sandboxHandler;
     @Inject ExceptionTranslator exceptionTranslator;
 
     public SortaServiceHandler() {
@@ -42,6 +42,8 @@ public class SortaServiceHandler implements RequestHandler<APIGatewayProxyReques
                 return imageUploadHandler.handleRequest(request);
             } else if (path.contains("/users/profile") && HTTP_GET.equals(httpMethod)) {
                 return userProfileHandler.handleRequest(request, context);
+            } else if (path.contains("/sandbox/test") && HTTP_POST.equals(httpMethod)) {
+                return sandboxHandler.handleRequest(request, context);
             } else {
                 throw new NotFoundException("Endpoint not found: " + path);
             }

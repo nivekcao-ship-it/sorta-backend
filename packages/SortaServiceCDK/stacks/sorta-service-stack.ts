@@ -133,6 +133,11 @@ export class SortaServiceStack extends cdk.Stack {
           path: 'v1/users/profile',
           method: 'GET',
           handler: sortaApiLambda.function
+        },
+        {
+          path: 'v1/sandbox/test', // Not an actual endpoint, only for testing purpose
+          method: 'POST',
+          handler: sortaApiLambda.function
         }
       ]
     });

@@ -1,5 +1,6 @@
 package com.sorta.service.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class BedrockFMRequest {
     
     @Data
     @Builder
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Content {
         private String type;
         private String text;

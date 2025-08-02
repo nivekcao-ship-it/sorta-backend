@@ -8,8 +8,10 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 public class SortaItemPlan {
-    double x;
-    double y;
-    double width;
-    double height;
+    String itemId;
+    String name;
+    ImageCoordinates coordinates;
+    SortaSuggestedAction suggestedAction;
+    String suggestedLocation;
+    String reason;
 }

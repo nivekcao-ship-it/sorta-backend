@@ -8,5 +8,8 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 public class ImageCoordinates {
-
+    double x;
+    double y;
+    double width;
+    double height;
 }

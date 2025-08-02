@@ -98,13 +98,14 @@ public class DescribeImageProcessor {
                     .build()
             ))
             .build();
-        
-        // Invoke Claude
-        log.debug("Invoking Claude model for image description");
+
         final InvokeModelRequest request = InvokeModelRequest.builder()
             .modelId("anthropic.claude-3-5-sonnet-20241022-v2:0")
             .body(SdkBytes.fromUtf8String(objectMapper.writeValueAsString(requestBody)))
             .build();
+
+        // Invoke Claude
+        log.debug("Invoking Claude model for image description {}", objectMapper.writeValueAsString(requestBody));
             
         final InvokeModelResponse response = bedrockClient.invokeModel(request);
         log.debug("Received response from Claude model");
