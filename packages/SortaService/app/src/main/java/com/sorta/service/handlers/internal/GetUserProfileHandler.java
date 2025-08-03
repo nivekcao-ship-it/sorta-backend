@@ -5,7 +5,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.sorta.service.converters.APIGatewayConverter;
-import com.sorta.service.models.userprofile.UserProfileResponse;
+import com.sorta.service.models.userprofile.GetUserProfileResponse;
 import com.sorta.service.processors.GetUserProfileProcessor;
 import lombok.extern.log4j.Log4j2;
 
@@ -28,7 +28,7 @@ public class GetUserProfileHandler implements RequestHandler<APIGatewayProxyRequ
     @Override
     public APIGatewayProxyResponseEvent handleRequest(final APIGatewayProxyRequestEvent input, final Context context) {
         final String userId = input.getQueryStringParameters().get(USER_ID);
-        final UserProfileResponse response = getUserProfileProcessor.getUserProfile(userId);
+        final GetUserProfileResponse response = getUserProfileProcessor.getUserProfile(userId);
         return responseConverter.createSuccessResponse(response);
     }
 }

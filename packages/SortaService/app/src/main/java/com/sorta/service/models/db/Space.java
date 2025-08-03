@@ -9,6 +9,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -20,6 +21,8 @@ public class Space {
     private String userId;
     private String roomName;
     private String roomType;
+    private String status;
+    private String description;
     private List<String> spacePhotos;
 
     @DynamoDbPartitionKey

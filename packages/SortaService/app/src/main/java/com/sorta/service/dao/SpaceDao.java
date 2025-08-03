@@ -7,6 +7,7 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
+import software.amazon.awssdk.enhanced.dynamodb.model.ReadBatch;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -65,5 +66,28 @@ public class SpaceDao {
         
         getSpaceTable().deleteItem(key);
         log.info("Deleted room: {} for user: {}", spaceId, userId);
+    }
+
+    public List<Space> getSpacesByIds(final String userId, final List<String> spaceIds) {
+        if (spaceIds == null || spaceIds.isEmpty()) {
+            return List.of();
+        }
+
+        final ReadBatch.Builder<Space> readBatchBuilder = ReadBatch.builder(Space.class)
+                .mappedTableResource(getSpaceTable());
+        
+        spaceIds.forEach(spaceId -> {
+            final Key key = Key.builder()
+                    .partitionValue(userId)
+                    .sortValue(spaceId)
+                    .build();
+            readBatchBuilder.addGetItem(key);
+        });
+
+        return dynamoDbClient.batchGetItem(builder -> 
+                builder.addReadBatch(readBatchBuilder.build()))
+                .resultsForTable(getSpaceTable())
+                .stream()
+                .toList();
     }
 }
