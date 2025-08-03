@@ -1,6 +1,6 @@
 package com.sorta.service.dao;
 
-import com.sorta.service.models.Space;
+import com.sorta.service.models.db.Space;
 import lombok.extern.log4j.Log4j2;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;

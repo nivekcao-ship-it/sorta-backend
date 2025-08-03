@@ -2,10 +2,9 @@ package com.sorta.service.processors;
 
 import com.sorta.service.converters.SortaAgentConverter;
 import com.sorta.service.exceptions.InternalServerException;
-import com.sorta.service.models.SortaAgentRequest;
-import com.sorta.service.models.SortaAgentResponse;
+import com.sorta.service.models.agent.SortaAgentRequest;
+import com.sorta.service.models.agent.SortaAgentResponse;
 import com.sorta.service.workflow.AgentMessageAugmentationWorkflow;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import software.amazon.awssdk.services.bedrockagentruntime.BedrockAgentRuntimeAsyncClient;
 import software.amazon.awssdk.services.bedrockagentruntime.model.InvokeAgentRequest;

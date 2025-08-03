@@ -1,6 +1,6 @@
 package com.sorta.service.dagger;
 
-import com.sorta.service.handlers.GetUserProfileHandler;
+import com.sorta.service.handlers.internal.GetUserProfileHandler;
 import com.sorta.service.handlers.SortaAgentActionGroupHandler;
 import com.sorta.service.handlers.SortaServiceHandler;
 import dagger.Component;

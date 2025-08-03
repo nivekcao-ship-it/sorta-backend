@@ -7,6 +7,10 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.sorta.service.dagger.AppComponent;
 import com.sorta.service.exceptions.APIGatewayExceptionTranslator;
 import com.sorta.service.exceptions.NotFoundException;
+import com.sorta.service.handlers.internal.GetUserProfileHandler;
+import com.sorta.service.handlers.internal.UploadImageHandler;
+import com.sorta.service.handlers.internal.SandboxHandler;
+import com.sorta.service.handlers.internal.SortaAgentChatHandler;
 import lombok.extern.log4j.Log4j2;
 
 import javax.inject.Inject;
@@ -17,11 +21,14 @@ public class SortaServiceHandler implements RequestHandler<APIGatewayProxyReques
     private static final String HTTP_POST = "POST";
     private static final String HTTP_GET = "GET";
 
-    @Inject SortaAgentHandler sortaAgentHandler;
-    @Inject ImageUploadHandler imageUploadHandler;
+    @Inject
+    SortaAgentChatHandler sortaAgentChatHandler;
+    @Inject
+    UploadImageHandler uploadImageHandler;
     @Inject
     GetUserProfileHandler getUserProfileHandler;
-    @Inject SandboxHandler sandboxHandler;
+    @Inject
+    SandboxHandler sandboxHandler;
     @Inject
     APIGatewayExceptionTranslator APIGatewayExceptionTranslator;
 
@@ -39,9 +46,9 @@ public class SortaServiceHandler implements RequestHandler<APIGatewayProxyReques
             final String httpMethod = request.getHttpMethod();
 
             if (path.contains("/agent/conversation") && HTTP_POST.equals(httpMethod)) {
-                return sortaAgentHandler.handleRequest(request);
+                return sortaAgentChatHandler.handleRequest(request);
             } else if (path.contains("/images/presigned-upload-url") && HTTP_POST.equals(httpMethod)) {
-                return imageUploadHandler.handleRequest(request);
+                return uploadImageHandler.handleRequest(request);
             } else if (path.contains("/users/profile") && HTTP_GET.equals(httpMethod)) {
                 return getUserProfileHandler.handleRequest(request, context);
             } else if (path.contains("/sandbox/test") && HTTP_POST.equals(httpMethod)) {

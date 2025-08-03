@@ -4,9 +4,9 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sorta.service.exceptions.BadRequestException;
-import com.sorta.service.models.SortaAgentMessage;
-import com.sorta.service.models.SortaAgentRequest;
-import com.sorta.service.models.SortaAgentResponse;
+import com.sorta.service.models.agent.SortaAgentMessage;
+import com.sorta.service.models.agent.SortaAgentRequest;
+import com.sorta.service.models.agent.SortaAgentResponse;
 import lombok.extern.log4j.Log4j2;
 
 import javax.inject.Inject;

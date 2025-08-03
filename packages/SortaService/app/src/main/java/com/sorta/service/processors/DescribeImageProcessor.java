@@ -1,9 +1,9 @@
 package com.sorta.service.processors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sorta.service.models.BedrockFMRequest;
-import com.sorta.service.models.BedrockFMResponse;
-import com.sorta.service.models.ImageDescriptionResult;
+import com.sorta.service.models.bedrock.BedrockFMRequest;
+import com.sorta.service.models.bedrock.BedrockFMResponse;
+import com.sorta.service.models.imageupload.ImageDescriptionResult;
 import lombok.extern.log4j.Log4j2;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient;

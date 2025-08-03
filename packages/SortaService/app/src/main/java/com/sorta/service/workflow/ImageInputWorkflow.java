@@ -2,7 +2,7 @@ package com.sorta.service.workflow;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sorta.service.exceptions.InternalServerException;
-import com.sorta.service.models.SortaAgentRequest;
+import com.sorta.service.models.agent.SortaAgentRequest;
 
 public class ImageInputWorkflow implements  AgentMessageAugmentationWorkflow {
     private final ObjectMapper objectMapper;

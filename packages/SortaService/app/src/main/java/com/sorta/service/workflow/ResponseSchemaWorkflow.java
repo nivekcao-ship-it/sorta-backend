@@ -1,6 +1,6 @@
 package com.sorta.service.workflow;
 
-import com.sorta.service.models.SortaAgentRequest;
+import com.sorta.service.models.agent.SortaAgentRequest;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2

@@ -1,6 +1,6 @@
 package com.sorta.service.dao;
 
-import com.sorta.service.models.User;
+import com.sorta.service.models.db.User;
 import lombok.extern.log4j.Log4j2;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
@@ -50,5 +50,10 @@ public class UserDao {
         
         getUserTable().deleteItem(key);
         log.info("Deleted user: {}", userId);
+    }
+
+    public void updateUser(final User user) {
+        getUserTable().updateItem(user);
+        log.info("Updated user: {}", user.getUserId());
     }
 }
