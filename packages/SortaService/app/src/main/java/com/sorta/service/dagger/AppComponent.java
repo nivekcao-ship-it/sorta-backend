@@ -1,8 +1,8 @@
 package com.sorta.service.dagger;
 
+import com.sorta.service.handlers.GetUserProfileHandler;
 import com.sorta.service.handlers.SortaAgentActionGroupHandler;
 import com.sorta.service.handlers.SortaServiceHandler;
-import com.sorta.service.handlers.UserProfileHandler;
 import dagger.Component;
 
 import javax.inject.Singleton;
@@ -12,7 +12,7 @@ import javax.inject.Singleton;
 public interface AppComponent {
     void inject(SortaAgentActionGroupHandler handler);
     void inject(SortaServiceHandler handler);
-    void inject(UserProfileHandler handler);
+    void inject(GetUserProfileHandler handler);
     
     @Component.Builder
     interface Builder {

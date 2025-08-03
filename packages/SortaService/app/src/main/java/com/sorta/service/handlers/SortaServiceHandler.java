@@ -19,7 +19,8 @@ public class SortaServiceHandler implements RequestHandler<APIGatewayProxyReques
 
     @Inject SortaAgentHandler sortaAgentHandler;
     @Inject ImageUploadHandler imageUploadHandler;
-    @Inject UserProfileHandler userProfileHandler;
+    @Inject
+    GetUserProfileHandler getUserProfileHandler;
     @Inject SandboxHandler sandboxHandler;
     @Inject
     APIGatewayExceptionTranslator APIGatewayExceptionTranslator;
@@ -42,7 +43,7 @@ public class SortaServiceHandler implements RequestHandler<APIGatewayProxyReques
             } else if (path.contains("/images/presigned-upload-url") && HTTP_POST.equals(httpMethod)) {
                 return imageUploadHandler.handleRequest(request);
             } else if (path.contains("/users/profile") && HTTP_GET.equals(httpMethod)) {
-                return userProfileHandler.handleRequest(request, context);
+                return getUserProfileHandler.handleRequest(request, context);
             } else if (path.contains("/sandbox/test") && HTTP_POST.equals(httpMethod)) {
                 return sandboxHandler.handleRequest(request, context);
             } else {

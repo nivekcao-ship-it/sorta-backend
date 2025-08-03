@@ -12,8 +12,13 @@ import software.amazon.awssdk.services.bedrockruntime.model.InvokeModelResponse;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -65,10 +70,10 @@ public class DescribeImageProcessor {
     private String describeImage(final String imageUrl) throws Exception {
         log.debug("Starting image description for: {}", imageUrl);
         
-        // Download image from S3
-        log.debug("Downloading image from S3: {}", imageUrl);
-        final byte[] imageBytes = downloadImageFromS3(imageUrl);
-        log.debug("Downloaded {} bytes from S3", imageBytes.length);
+        // Download and compress image from S3
+        log.debug("Downloading and compressing image from S3: {}", imageUrl);
+        final byte[] imageBytes = downloadAndCompressImage(imageUrl);
+        log.debug("Downloaded and compressed {} bytes from S3", imageBytes.length);
         
         final String base64Image = Base64.getEncoder().encodeToString(imageBytes);
         log.debug("Converted image to base64, length: {}", base64Image.length());
@@ -100,7 +105,7 @@ public class DescribeImageProcessor {
             .build();
 
         final InvokeModelRequest request = InvokeModelRequest.builder()
-            .modelId("anthropic.claude-3-5-sonnet-20241022-v2:0")
+            .modelId("anthropic.claude-3-haiku-20240307-v1:0")
             .body(SdkBytes.fromUtf8String(objectMapper.writeValueAsString(requestBody)))
             .build();
 
@@ -121,8 +126,48 @@ public class DescribeImageProcessor {
         return description;
     }
 
+    private byte[] downloadAndCompressImage(String imageUrl) throws Exception {
+        byte[] originalBytes = downloadImageFromS3(imageUrl);
+        
+        // Compress to max 512KB
+        if (originalBytes.length > 512_000) {
+            BufferedImage img = ImageIO.read(new ByteArrayInputStream(originalBytes));
+            BufferedImage resized = resizeImage(img, 800, 600); // Max dimensions
+            
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(resized, "jpg", baos);
+            return baos.toByteArray();
+        }
+        return originalBytes;
+    }
+    
+    private BufferedImage resizeImage(BufferedImage original, int maxWidth, int maxHeight) {
+        int width = original.getWidth();
+        int height = original.getHeight();
+        
+        // Calculate new dimensions maintaining aspect ratio
+        double widthRatio = (double) maxWidth / width;
+        double heightRatio = (double) maxHeight / height;
+        double ratio = Math.min(widthRatio, heightRatio);
+        
+        int newWidth = (int) (width * ratio);
+        int newHeight = (int) (height * ratio);
+        
+        BufferedImage resized = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = resized.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.drawImage(original, 0, 0, newWidth, newHeight, null);
+        g2d.dispose();
+        
+        return resized;
+    }
+
     private byte[] downloadImageFromS3(final String imageUrl) throws Exception {
-        final URI uri = URI.create(imageUrl);
+        String cleanUrl = imageUrl.trim();
+        if (cleanUrl.startsWith("[") && cleanUrl.endsWith("]")) {
+            cleanUrl = cleanUrl.substring(1, cleanUrl.length() - 1);
+        }
+        final URI uri = URI.create(cleanUrl);
         final String bucket = uri.getHost().split("\\.")[0];
         final String key = uri.getPath().substring(1);
         

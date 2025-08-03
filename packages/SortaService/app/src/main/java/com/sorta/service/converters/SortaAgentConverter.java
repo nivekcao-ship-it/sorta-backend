@@ -35,7 +35,8 @@ public class SortaAgentConverter {
     public SortaAgentResponse toSortaAgentResponse(final String message,
                                                    final String sessionId,
                                                    final String userId) throws JsonProcessingException {
-        final SortaAgentMessage agentResponseMsg = objectMapper.readValue(message, SortaAgentMessage.class);
+        String jsonPart = extractJson(message);
+        final SortaAgentMessage agentResponseMsg = objectMapper.readValue(jsonPart, SortaAgentMessage.class);
         return SortaAgentResponse.builder()
                 .message(agentResponseMsg)
                 .sessionId(sessionId)
@@ -43,5 +44,14 @@ public class SortaAgentConverter {
                 .timestamp(Instant.now().toString())
                 .success(true)
                 .build();
+    }
+
+    private String extractJson(String response) {
+        int start = response.indexOf('{');
+        int end = response.lastIndexOf('}');
+        if (start != -1 && end != -1 && end > start) {
+            return response.substring(start, end + 1);
+        }
+        return response;
     }
 }

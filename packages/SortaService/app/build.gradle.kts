@@ -36,6 +36,7 @@ dependencies {
 
     // JSON processing
     implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
+    implementation("com.fasterxml.jackson.module:jackson-module-jsonSchema:2.15.2")
 
     // Dagger
     implementation("com.google.dagger:dagger:2.48.1")

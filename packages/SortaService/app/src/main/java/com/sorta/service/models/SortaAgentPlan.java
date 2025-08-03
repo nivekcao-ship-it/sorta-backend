@@ -1,14 +1,10 @@
 package com.sorta.service.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 
 import java.util.List;
 
-@Value
-@Builder
-@AllArgsConstructor
+@Data
 public class SortaAgentPlan {
     List<SortaItemPlan> itemPlans;
 }

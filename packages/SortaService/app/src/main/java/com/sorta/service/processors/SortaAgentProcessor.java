@@ -71,6 +71,8 @@ public class SortaAgentProcessor {
 
             future.get(); // Wait for completion
 
+            log.info("Received response from agent: {}", responseText.toString());
+
             return sortaAgentConverter.toSortaAgentResponse(responseText.toString(), request.getSessionId(), request.getUserId());
         } catch (final Exception e) {
             log.error("Error invoking Bedrock agent: {}", e.getMessage(), e);

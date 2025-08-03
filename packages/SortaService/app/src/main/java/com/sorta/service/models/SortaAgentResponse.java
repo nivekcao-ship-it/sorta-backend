@@ -1,12 +1,12 @@
 package com.sorta.service.models;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 @Builder
-@AllArgsConstructor
+@JsonDeserialize(builder = SortaAgentResponse.SortaAgentResponseBuilder.class)
 public class SortaAgentResponse {
     String sessionId;
     String userId;

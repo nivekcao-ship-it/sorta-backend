@@ -12,15 +12,15 @@ import lombok.extern.log4j.Log4j2;
 import javax.inject.Inject;
 
 @Log4j2
-public class UserProfileHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+public class GetUserProfileHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
     private static final String USER_ID = "userId";
 
     private final UserProfileProcessor userProfileProcessor;
     private final APIGatewayResponseConverter responseConverter;
 
     @Inject
-    public UserProfileHandler(UserProfileProcessor userProfileProcessor,
-                             APIGatewayResponseConverter responseConverter) {
+    public GetUserProfileHandler(UserProfileProcessor userProfileProcessor,
+                                 APIGatewayResponseConverter responseConverter) {
         this.userProfileProcessor = userProfileProcessor;
         this.responseConverter = responseConverter;
     }

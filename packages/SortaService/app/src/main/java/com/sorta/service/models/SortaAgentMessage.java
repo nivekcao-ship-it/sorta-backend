@@ -1,12 +1,8 @@
 package com.sorta.service.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 
-@Value
-@Builder
-@AllArgsConstructor
+@Data
 public class SortaAgentMessage {
     String text;
     SortaAgentData data;

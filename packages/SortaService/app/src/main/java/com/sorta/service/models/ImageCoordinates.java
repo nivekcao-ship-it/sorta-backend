@@ -1,12 +1,10 @@
 package com.sorta.service.models;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 @Builder
-@AllArgsConstructor
 public class ImageCoordinates {
     double x;
     double y;
