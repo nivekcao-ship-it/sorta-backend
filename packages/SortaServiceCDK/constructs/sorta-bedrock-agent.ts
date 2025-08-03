@@ -34,7 +34,7 @@ export class SortaBedrockAgent extends Construct {
     this.agent = new bedrock.Agent(this, 'BedrockAgent', {
       // name: props.agentName,
       description: props.description,
-      foundationModel: bedrock.BedrockFoundationModel.ANTHROPIC_CLAUDE_3_5_SONNET_V2_0,
+      foundationModel: bedrock.BedrockFoundationModel.ANTHROPIC_CLAUDE_3_5_HAIKU_V1_0,
       instruction: props.instruction,
       idleSessionTTL: cdk.Duration.minutes(10),
       shouldPrepareAgent: true,
