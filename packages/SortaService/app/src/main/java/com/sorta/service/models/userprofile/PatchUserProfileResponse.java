@@ -1,10 +1,10 @@
 package com.sorta.service.models.userprofile;
 
+import lombok.Builder;
 import lombok.Data;
-import java.util.List;
 
 @Data
-public class UpdateUserProfileRequest {
+@Builder
+public class PatchUserProfileResponse {
     private String userId;
-    private List<RoomInfo> roomInfo;
 }

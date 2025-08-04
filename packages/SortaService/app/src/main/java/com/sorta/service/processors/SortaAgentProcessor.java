@@ -4,7 +4,8 @@ import com.sorta.service.converters.SortaAgentConverter;
 import com.sorta.service.exceptions.InternalServerException;
 import com.sorta.service.models.agent.SortaAgentRequest;
 import com.sorta.service.models.agent.SortaAgentResponse;
-import com.sorta.service.workflow.AgentMessageAugmentationWorkflow;
+import com.sorta.service.utils.SessionIdGenerator;
+import com.sorta.service.workflow.agentchat.AgentMessageAugmentationWorkflow;
 import lombok.extern.log4j.Log4j2;
 import software.amazon.awssdk.services.bedrockagentruntime.BedrockAgentRuntimeAsyncClient;
 import software.amazon.awssdk.services.bedrockagentruntime.model.InvokeAgentRequest;
@@ -22,24 +23,31 @@ import java.util.concurrent.CompletableFuture;
 public class SortaAgentProcessor {
     private final BedrockAgentRuntimeAsyncClient bedrockAgentClient;
     private final SortaAgentConverter sortaAgentConverter;
+    private final SessionIdGenerator sessionIdGenerator;
     private final List<AgentMessageAugmentationWorkflow> workflows;
     private final String agentId;
     private final String agentAliasId;
 
     @Inject
-    public SortaAgentProcessor(BedrockAgentRuntimeAsyncClient bedrockAgentClient,
-                               SortaAgentConverter sortaAgentConverter,
-                               List<AgentMessageAugmentationWorkflow> workflows,
-                               @Named("sorta.bedrock.agentId") String agentId,
-                               @Named("sorta.bedrock.agentAlias") String agentAliasId) {
+    public SortaAgentProcessor(final BedrockAgentRuntimeAsyncClient bedrockAgentClient,
+                               final SortaAgentConverter sortaAgentConverter,
+                               final SessionIdGenerator sessionIdGenerator,
+                               final List<AgentMessageAugmentationWorkflow> workflows,
+                               @Named("sorta.bedrock.agentId") final String agentId,
+                               @Named("sorta.bedrock.agentAlias") final String agentAliasId) {
         this.bedrockAgentClient = bedrockAgentClient;
         this.sortaAgentConverter = sortaAgentConverter;
+        this.sessionIdGenerator = sessionIdGenerator;
         this.workflows = workflows;
         this.agentId = agentId;
         this.agentAliasId = agentAliasId;
     }
 
     public SortaAgentResponse process(final SortaAgentRequest request) {
+        if (request.getSessionId() == null) {
+            request.setSessionId(sessionIdGenerator.generate());
+        }
+
         String augmentedMsg = request.getMessage();
         for (AgentMessageAugmentationWorkflow workflow: workflows) {
             augmentedMsg = workflow.run(request, augmentedMsg);

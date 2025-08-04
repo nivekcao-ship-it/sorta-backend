@@ -41,21 +41,22 @@ public class DescribeImageProcessor {
         this.s3Client = s3Client;
     }
 
+    // TODO: this method no longer makes sense need to deprecate it
     public List<ImageDescriptionResult> process(final List<String> imageUrls) {
         log.info("Processing {} image URLs for description", imageUrls.size());
         final List<ImageDescriptionResult> results = new ArrayList<>();
         
-        for (final String imageUrl : imageUrls) {
-            log.debug("Processing image: {}", imageUrl);
-            try {
-                final String description = describeImage(imageUrl);
-                log.debug("Successfully described image: {}", imageUrl);
+        try {
+            final String description = describeImage(imageUrls);
+            for (final String imageUrl : imageUrls) {
                 results.add(ImageDescriptionResult.builder()
                     .imageUrl(imageUrl)
                     .imageDescription(description)
                     .build());
-            } catch (Exception e) {
-                log.error("Error processing image {}: {}", imageUrl, e.getMessage(), e);
+            }
+        } catch (Exception e) {
+            log.error("Error processing images: {}", e.getMessage(), e);
+            for (final String imageUrl : imageUrls) {
                 results.add(ImageDescriptionResult.builder()
                     .imageUrl(imageUrl)
                     .imageDescription("Error processing image")
@@ -67,39 +68,39 @@ public class DescribeImageProcessor {
         return results;
     }
 
-    private String describeImage(final String imageUrl) throws Exception {
-        log.debug("Starting image description for: {}", imageUrl);
+    public String describeImage(final List<String> imageUrls) throws Exception {
+        log.debug("Starting batch image description for {} images", imageUrls.size());
         
-        // Download and compress image from S3
-        log.debug("Downloading and compressing image from S3: {}", imageUrl);
-        final byte[] imageBytes = downloadAndCompressImage(imageUrl);
-        log.debug("Downloaded and compressed {} bytes from S3", imageBytes.length);
+        List<BedrockFMRequest.Content> contentList = new ArrayList<>();
         
-        final String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-        log.debug("Converted image to base64, length: {}", base64Image.length());
+        // Add all images to content
+        for (String imageUrl : imageUrls) {
+            byte[] imageBytes = downloadAndCompressImage(imageUrl);
+            String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+            
+            contentList.add(BedrockFMRequest.Content.builder()
+                .type("image")
+                .source(BedrockFMRequest.ImageSource.builder()
+                    .type("base64")
+                    .mediaType("image/jpeg")
+                    .data(base64Image)
+                    .build())
+                .build());
+        }
         
-        // Prepare Claude request
-        log.debug("Preparing Claude request for image analysis");
+        // Add text prompt
+        contentList.add(BedrockFMRequest.Content.builder()
+            .type("text")
+            .text("Describe all these images collectively, focusing on items, room types, and storage areas. Provide a comprehensive overview of what you see across all images.")
+            .build());
+
         final BedrockFMRequest requestBody = BedrockFMRequest.builder()
             .anthropicVersion("bedrock-2023-05-31")
-            .maxTokens(1000)
+            .maxTokens(2000)
             .messages(List.of(
                 BedrockFMRequest.Message.builder()
                     .role("user")
-                    .content(List.of(
-                        BedrockFMRequest.Content.builder()
-                            .type("image")
-                            .source(BedrockFMRequest.ImageSource.builder()
-                                .type("base64")
-                                .mediaType("image/jpeg")
-                                .data(base64Image)
-                                .build())
-                            .build(),
-                        BedrockFMRequest.Content.builder()
-                            .type("text")
-                            .text("Describe this image in detail, focusing on items, room type, and storage areas.")
-                            .build()
-                    ))
+                    .content(contentList)
                     .build()
             ))
             .build();
@@ -109,21 +110,11 @@ public class DescribeImageProcessor {
             .body(SdkBytes.fromUtf8String(objectMapper.writeValueAsString(requestBody)))
             .build();
 
-        // Invoke Claude
-        log.debug("Invoking Claude model for image description");
-            
         final InvokeModelResponse response = bedrockClient.invokeModel(request);
-        log.debug("Received response from Claude model");
-        
-        // Parse response
         final String responseString = response.body().asUtf8String();
-        log.debug("Claude response length: {} characters", responseString.length());
-        
         final BedrockFMResponse responseBody = objectMapper.readValue(responseString, BedrockFMResponse.class);
-        final String description = responseBody.getContent().get(0).getText();
-        log.debug("Extracted description length: {} characters", description.length());
         
-        return description;
+        return responseBody.getContent().get(0).getText();
     }
 
     private byte[] downloadAndCompressImage(String imageUrl) throws Exception {

@@ -2,9 +2,14 @@ package com.sorta.service.dagger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
-import com.sorta.service.workflow.AgentMessageAugmentationWorkflow;
-import com.sorta.service.workflow.ImageInputWorkflow;
-import com.sorta.service.workflow.ResponseSchemaWorkflow;
+import com.sorta.service.dao.SpaceDao;
+import com.sorta.service.processors.DescribeImageProcessor;
+import com.sorta.service.workflow.agentchat.AgentMessageAugmentationWorkflow;
+import com.sorta.service.workflow.agentchat.ImageInputWorkflow;
+import com.sorta.service.workflow.agentchat.ResponseSchemaWorkflow;
+import com.sorta.service.workflow.patchuser.AddRoomPhotosWorkflow;
+import com.sorta.service.workflow.patchuser.PatchRoomInfoWorkflow;
+import com.sorta.service.workflow.patchuser.PatchUserWorkflow;
 import dagger.Module;
 import dagger.Provides;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
@@ -159,10 +164,20 @@ public class BedrockModule {
 
     @Provides
     @Singleton
-    public List<AgentMessageAugmentationWorkflow> provideMessageAugmentationWorkflow(final ObjectMapper objectMapper,
+    public List<AgentMessageAugmentationWorkflow> provideMessageAugmentationWorkflows(final ObjectMapper objectMapper,
                                                                                      @Named("sorta.bedrock.responseSchema") final String schema) {
         return ImmutableList.of(
                 new ImageInputWorkflow(objectMapper),
                 new ResponseSchemaWorkflow(schema));
+    }
+
+    @Provides
+    @Singleton
+    public List<PatchUserWorkflow> providePatchUserWorkflows(final DescribeImageProcessor describeImageProcessor,
+                                                             final SpaceDao spaceDao) {
+        return ImmutableList.of(
+                new PatchRoomInfoWorkflow(),
+                new AddRoomPhotosWorkflow(describeImageProcessor, spaceDao)
+        );
     }
 }
