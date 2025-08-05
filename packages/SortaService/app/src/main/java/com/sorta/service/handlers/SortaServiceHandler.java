@@ -7,7 +7,9 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.sorta.service.dagger.AppComponent;
 import com.sorta.service.exceptions.APIGatewayExceptionTranslator;
 import com.sorta.service.exceptions.NotFoundException;
+import com.sorta.service.handlers.internal.CreateUserProfileHandler;
 import com.sorta.service.handlers.internal.GetUserProfileHandler;
+import com.sorta.service.handlers.internal.PatchUserProfileHandler;
 import com.sorta.service.handlers.internal.UploadImageHandler;
 import com.sorta.service.handlers.internal.SandboxHandler;
 import com.sorta.service.handlers.internal.SortaAgentChatHandler;
@@ -20,6 +22,8 @@ public class SortaServiceHandler implements RequestHandler<APIGatewayProxyReques
     private static final AppComponent APP_COMPONENT = AppComponent.getInstance();
     private static final String HTTP_POST = "POST";
     private static final String HTTP_GET = "GET";
+    private static final String HTTP_PATCH = "PATCH";
+    private static final String HTTP_PUT = "PUT";
 
     @Inject
     SortaAgentChatHandler sortaAgentChatHandler;
@@ -27,6 +31,10 @@ public class SortaServiceHandler implements RequestHandler<APIGatewayProxyReques
     UploadImageHandler uploadImageHandler;
     @Inject
     GetUserProfileHandler getUserProfileHandler;
+    @Inject
+    PatchUserProfileHandler patchUserProfileHandler;
+    @Inject
+    CreateUserProfileHandler createUserProfileHandler;
     @Inject
     SandboxHandler sandboxHandler;
     @Inject
@@ -51,6 +59,10 @@ public class SortaServiceHandler implements RequestHandler<APIGatewayProxyReques
                 return uploadImageHandler.handleRequest(request);
             } else if (path.contains("/users/profile") && HTTP_GET.equals(httpMethod)) {
                 return getUserProfileHandler.handleRequest(request, context);
+            } else if (path.contains("/users/profile") && HTTP_PATCH.equals(httpMethod)) {
+                return patchUserProfileHandler.handleRequest(request, context);
+            } else if (path.contains("/users/profile") && HTTP_PUT.equals(httpMethod)) {
+                return createUserProfileHandler.handleRequest(request, context);
             } else if (path.contains("/sandbox/test") && HTTP_POST.equals(httpMethod)) {
                 return sandboxHandler.handleRequest(request, context);
             } else {

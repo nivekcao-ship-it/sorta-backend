@@ -5,7 +5,6 @@ import com.sorta.service.exceptions.BadRequestException;
 import com.sorta.service.models.db.User;
 import com.sorta.service.models.userprofile.CreateUserProfileRequest;
 import com.sorta.service.models.userprofile.CreateUserProfileResponse;
-import com.sorta.service.models.userprofile.RoomInfo;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,12 +36,9 @@ public class CreateUserProfileProcessor {
 
         User user = User.builder()
                 .userId(request.getUserId())
-                .roomInfo(Optional.ofNullable(request.getRoomInfo())
+                .rooms(Optional.ofNullable(request.getRoomInfo())
                     .map(roomInfoList -> roomInfoList.stream()
-                        .map(r -> RoomInfo.builder()
-                            .id(r.getId())
-                            .image(r.getImages())
-                            .build())
+                        .map(r -> r.getId())
                         .collect(Collectors.toList()))
                     .orElse(null))
                 .build();

@@ -31,8 +31,8 @@ public class GetUserProfileProcessor {
         final User user = userDao.getUser(userId)
                 .orElseThrow(() -> new NotFoundException("User not found: " + userId));
 
-        final Map<String, RoomInfo> roomInfos = user.getSpaces() != null ?
-                spaceDao.getSpacesByIds(userId, user.getSpaces())
+        final Map<String, RoomInfo> roomInfos = user.getRooms() != null ?
+                spaceDao.getSpacesByIds(userId, user.getRooms())
                         .stream()
                         .map(this::toRoomInfo)
                         .collect(Collectors.toMap(RoomInfo::getId, Function.identity())) : Map.of();

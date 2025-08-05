@@ -1,24 +1,32 @@
 package com.sorta.service.workflow.user;
 
+import com.sorta.service.dao.SpaceDao;
+import com.sorta.service.models.db.Space;
 import com.sorta.service.models.db.User;
 import com.sorta.service.models.userprofile.AddRoomInfoRequest;
 import com.sorta.service.models.userprofile.PatchUserProfileRequest;
-import com.sorta.service.models.userprofile.RoomInfo;
 import lombok.extern.log4j.Log4j2;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Log4j2
 @Singleton
 public class RoomInfoProfileWorkflowPatch implements PatchUserProfileWorkflow {
+    private final SpaceDao spaceDao;
+
+    @Inject
+    public RoomInfoProfileWorkflowPatch(SpaceDao spaceDao) {
+        this.spaceDao = spaceDao;
+    }
 
     @Override
     public User run(final PatchUserProfileRequest request, final User user) {
         if (shouldRun(request)) {
-            user.setRoomInfo(patchRoomInfo(user.getRoomInfo(), request.getRoomInfo()));
+            patchSpaces(user.getUserId(), request.getRoomInfo());
+            updateUserRooms(user, request.getRoomInfo());
         }
 
         return user;
@@ -29,26 +37,31 @@ public class RoomInfoProfileWorkflowPatch implements PatchUserProfileWorkflow {
         return request.getRoomInfo() != null;
     }
 
-    private List<RoomInfo> patchRoomInfo(List<RoomInfo> existing, List<AddRoomInfoRequest> updates) {
-        Map<String, RoomInfo> roomMap = existing != null ?
-                existing.stream().collect(Collectors.toMap(RoomInfo::getId, Function.identity())) :
-                new HashMap<>();
-
+    private void patchSpaces(final String userId, final List<AddRoomInfoRequest> updates) {
         for (AddRoomInfoRequest update : updates) {
-            RoomInfo existingRoom = roomMap.get(update.getId());
-            if (existingRoom != null && update.getImages() != null) {
-                Set<String> mergedImages = new LinkedHashSet<>(existingRoom.getImage());
+            final Optional<Space> existingSpace = spaceDao.getSpace(userId, update.getId());
+            
+            if (existingSpace.isPresent() && update.getImages() != null) {
+                final Space space = existingSpace.get();
+                final Set<String> mergedImages = new LinkedHashSet<>(space.getSpacePhotos() != null ? space.getSpacePhotos() : List.of());
                 mergedImages.addAll(update.getImages());
-                existingRoom.setImage(new ArrayList<>(mergedImages));
-                roomMap.put(update.getId(), existingRoom);
+                space.setSpacePhotos(new ArrayList<>(mergedImages));
+                spaceDao.saveSpace(space);
             } else if (update.getImages() != null) {
-                roomMap.put(update.getId(), RoomInfo.builder()
-                        .id(update.getId())
-                        .image(update.getImages())
-                        .build());
+                final Space newSpace = Space.builder()
+                        .userId(userId)
+                        .spaceId(update.getId())
+                        .spacePhotos(update.getImages())
+                        .status("READY")
+                        .build();
+                spaceDao.saveSpace(newSpace);
             }
         }
+    }
 
-        return new ArrayList<>(roomMap.values());
+    private void updateUserRooms(final User user, final List<AddRoomInfoRequest> updates) {
+        final Set<String> roomIds = new LinkedHashSet<>(user.getRooms() != null ? user.getRooms() : List.of());
+        roomIds.addAll(updates.stream().map(AddRoomInfoRequest::getId).collect(Collectors.toSet()));
+        user.setRooms(new ArrayList<>(roomIds));
     }
 }

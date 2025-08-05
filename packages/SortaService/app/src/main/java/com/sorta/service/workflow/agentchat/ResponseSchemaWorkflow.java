@@ -1,7 +1,6 @@
 package com.sorta.service.workflow.agentchat;
 
 import com.sorta.service.models.agent.SortaAgentRequest;
-import com.sorta.service.workflow.Workflow;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -24,6 +23,6 @@ public class ResponseSchemaWorkflow implements AgentMessageAugmentationWorkflow 
 
     @Override
     public Boolean shouldRun(final SortaAgentRequest request) {
-        return false;
+        return true;
     }
 }

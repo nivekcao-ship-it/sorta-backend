@@ -1,6 +1,5 @@
 package com.sorta.service.models.db;
 
-import com.sorta.service.models.userprofile.RoomInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,8 +18,7 @@ public class User {
     private String userId;
     private String email;
     private String name;
-    private List<String> spaces;
-    private List<RoomInfo> roomInfo;
+    private List<String> rooms;
 
     @DynamoDbPartitionKey
     public String getUserId() {

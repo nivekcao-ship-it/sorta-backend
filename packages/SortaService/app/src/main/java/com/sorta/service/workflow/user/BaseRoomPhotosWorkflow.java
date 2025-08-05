@@ -50,10 +50,13 @@ public abstract class BaseRoomPhotosWorkflow<T> {
                    .anyMatch(room -> room.getImages() != null && !room.getImages().isEmpty());
     }
 
-    private void updateSpaceDescription(String userId, String spaceId, String description, List<String> photos) {
-        Optional<Space> existingSpace = spaceDao.getSpace(userId, spaceId);
+    private void updateSpaceDescription(final String userId,
+                                        final String spaceId,
+                                        final String description,
+                                        final List<String> photos) {
+        final Optional<Space> existingSpace = spaceDao.getSpace(userId, spaceId);
         
-        Space space = existingSpace.orElse(Space.builder()
+        final Space space = existingSpace.orElse(Space.builder()
                 .userId(userId)
                 .spaceId(spaceId)
                 .build());

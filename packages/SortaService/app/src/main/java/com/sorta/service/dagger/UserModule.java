@@ -22,7 +22,7 @@ public class UserModule {
     public List<PatchUserProfileWorkflow> providePatchUserWorkflows(final DescribeImageProcessor describeImageProcessor,
                                                                     final SpaceDao spaceDao) {
         return ImmutableList.of(
-                new RoomInfoProfileWorkflowPatch(),
+                new RoomInfoProfileWorkflowPatch(spaceDao),
                 new AddRoomPhotosPatchWorkflow(describeImageProcessor, spaceDao)
         );
     }
