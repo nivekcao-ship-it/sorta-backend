@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PatchUserProfileRequest {
+public class CreateUserProfileRequest {
     @JsonProperty(required = true)
     private String userId;
     private List<AddRoomInfoRequest> roomInfo;

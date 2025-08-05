@@ -7,9 +7,9 @@ import com.sorta.service.processors.DescribeImageProcessor;
 import com.sorta.service.workflow.agentchat.AgentMessageAugmentationWorkflow;
 import com.sorta.service.workflow.agentchat.ImageInputWorkflow;
 import com.sorta.service.workflow.agentchat.ResponseSchemaWorkflow;
-import com.sorta.service.workflow.patchuser.AddRoomPhotosWorkflow;
-import com.sorta.service.workflow.patchuser.PatchRoomInfoWorkflow;
-import com.sorta.service.workflow.patchuser.PatchUserWorkflow;
+import com.sorta.service.workflow.user.AddRoomPhotosPatchWorkflow;
+import com.sorta.service.workflow.user.RoomInfoProfileWorkflowPatch;
+import com.sorta.service.workflow.user.PatchUserProfileWorkflow;
 import dagger.Module;
 import dagger.Provides;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
@@ -169,15 +169,5 @@ public class BedrockModule {
         return ImmutableList.of(
                 new ImageInputWorkflow(objectMapper),
                 new ResponseSchemaWorkflow(schema));
-    }
-
-    @Provides
-    @Singleton
-    public List<PatchUserWorkflow> providePatchUserWorkflows(final DescribeImageProcessor describeImageProcessor,
-                                                             final SpaceDao spaceDao) {
-        return ImmutableList.of(
-                new PatchRoomInfoWorkflow(),
-                new AddRoomPhotosWorkflow(describeImageProcessor, spaceDao)
-        );
     }
 }

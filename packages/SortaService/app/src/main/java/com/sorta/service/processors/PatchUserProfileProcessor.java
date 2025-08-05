@@ -5,7 +5,7 @@ import com.sorta.service.exceptions.NotFoundException;
 import com.sorta.service.models.db.User;
 import com.sorta.service.models.userprofile.PatchUserProfileRequest;
 import com.sorta.service.models.userprofile.PatchUserProfileResponse;
-import com.sorta.service.workflow.patchuser.PatchUserWorkflow;
+import com.sorta.service.workflow.user.PatchUserProfileWorkflow;
 import lombok.extern.log4j.Log4j2;
 
 import javax.inject.Inject;
@@ -16,11 +16,11 @@ import java.util.List;
 @Singleton
 public class PatchUserProfileProcessor {
     private final UserDao userDao;
-    private final List<PatchUserWorkflow> workflows;
+    private final List<PatchUserProfileWorkflow> workflows;
 
     @Inject
     public PatchUserProfileProcessor(final UserDao userDao,
-                                     final List<PatchUserWorkflow> workflows) {
+                                     final List<PatchUserProfileWorkflow> workflows) {
         this.userDao = userDao;
         this.workflows = workflows;
     }
@@ -29,10 +29,8 @@ public class PatchUserProfileProcessor {
         User user = userDao.getUser(request.getUserId())
                 .orElseThrow(() -> new NotFoundException("User not found: " + request.getUserId()));
 
-        for (PatchUserWorkflow workflow : workflows) {
-            if (workflow.shouldRun(request)) {
-                user = workflow.run(request, user);
-            }
+        for (PatchUserProfileWorkflow workflow : workflows) {
+            user = workflow.run(request, user);
         }
         
         userDao.updateUser(user);

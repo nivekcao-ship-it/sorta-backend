@@ -1,6 +1,7 @@
-package com.sorta.service.workflow.patchuser;
+package com.sorta.service.workflow.user;
 
 import com.sorta.service.models.db.User;
+import com.sorta.service.models.userprofile.AddRoomInfoRequest;
 import com.sorta.service.models.userprofile.PatchUserProfileRequest;
 import com.sorta.service.models.userprofile.RoomInfo;
 import lombok.extern.log4j.Log4j2;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Log4j2
 @Singleton
-public class PatchRoomInfoWorkflow implements PatchUserWorkflow {
+public class RoomInfoProfileWorkflowPatch implements PatchUserProfileWorkflow {
 
     @Override
     public User run(final PatchUserProfileRequest request, final User user) {
@@ -28,12 +29,12 @@ public class PatchRoomInfoWorkflow implements PatchUserWorkflow {
         return request.getRoomInfo() != null;
     }
 
-    private List<RoomInfo> patchRoomInfo(List<RoomInfo> existing, List<PatchUserProfileRequest.UpdateRoomInfoRequest> updates) {
+    private List<RoomInfo> patchRoomInfo(List<RoomInfo> existing, List<AddRoomInfoRequest> updates) {
         Map<String, RoomInfo> roomMap = existing != null ?
                 existing.stream().collect(Collectors.toMap(RoomInfo::getId, Function.identity())) :
                 new HashMap<>();
 
-        for (PatchUserProfileRequest.UpdateRoomInfoRequest update : updates) {
+        for (AddRoomInfoRequest update : updates) {
             RoomInfo existingRoom = roomMap.get(update.getId());
             if (existingRoom != null && update.getImages() != null) {
                 Set<String> mergedImages = new LinkedHashSet<>(existingRoom.getImage());

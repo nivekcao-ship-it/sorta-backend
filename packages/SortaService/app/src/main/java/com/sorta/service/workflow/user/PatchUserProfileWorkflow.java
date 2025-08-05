@@ -1,8 +1,8 @@
-package com.sorta.service.workflow.patchuser;
+package com.sorta.service.workflow.user;
 
 import com.sorta.service.models.db.User;
 import com.sorta.service.models.userprofile.PatchUserProfileRequest;
 import com.sorta.service.workflow.Workflow;
 
-public interface PatchUserWorkflow extends Workflow<PatchUserProfileRequest, User, User> {
+public interface PatchUserProfileWorkflow extends Workflow<PatchUserProfileRequest, User, User> {
 }

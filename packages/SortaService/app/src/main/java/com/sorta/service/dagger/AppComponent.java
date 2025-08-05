@@ -8,7 +8,7 @@ import dagger.Component;
 import javax.inject.Singleton;
 
 @Singleton
-@Component(modules = {S3Module.class, BedrockModule.class, CommonModule.class, DynamoDbModule.class})
+@Component(modules = {S3Module.class, BedrockModule.class, CommonModule.class, DynamoDbModule.class, UserModule.class})
 public interface AppComponent {
     void inject(SortaAgentActionGroupHandler handler);
     void inject(SortaServiceHandler handler);
