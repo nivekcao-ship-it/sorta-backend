@@ -35,8 +35,21 @@ public class SortaAgentConverter {
     public SortaAgentResponse toSortaAgentResponse(final String message,
                                                    final String sessionId,
                                                    final String userId) throws JsonProcessingException {
-        String jsonPart = extractJson(message);
-        final SortaAgentMessage agentResponseMsg = objectMapper.readValue(jsonPart, SortaAgentMessage.class);
+        final String jsonPart = extractJson(message);
+
+        SortaAgentMessage agentResponseMsg;
+
+        log.debug("Json String before: {}", jsonPart);
+        if (isValidJSON(jsonPart)) {
+            log.debug("Json String after: {}", jsonPart);
+            agentResponseMsg = objectMapper.readValue(jsonPart, SortaAgentMessage.class);
+        } else {
+            // agent output plain texts
+            agentResponseMsg = SortaAgentMessage.builder()
+                    .text(message)
+                    .build();
+        }
+
         return SortaAgentResponse.builder()
                 .message(agentResponseMsg)
                 .sessionId(sessionId)
@@ -46,12 +59,21 @@ public class SortaAgentConverter {
                 .build();
     }
 
-    private String extractJson(String response) {
-        int start = response.indexOf('{');
-        int end = response.lastIndexOf('}');
+    private String extractJson(final String response) {
+        final int start = response.indexOf('{');
+        final int end = response.lastIndexOf('}');
         if (start != -1 && end != -1 && end > start) {
             return response.substring(start, end + 1);
         }
         return response;
+    }
+
+    private boolean isValidJSON(final String jsonString) {
+        try {
+            objectMapper.readTree(jsonString);
+            return true;
+        } catch (JsonProcessingException e) {
+            return false;
+        }
     }
 }

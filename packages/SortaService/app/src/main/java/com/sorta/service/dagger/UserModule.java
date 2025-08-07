@@ -7,7 +7,7 @@ import com.sorta.service.workflow.user.AddRoomPhotosCreateWorkflow;
 import com.sorta.service.workflow.user.AddRoomPhotosPatchWorkflow;
 import com.sorta.service.workflow.user.CreateUserProfileWorkflow;
 import com.sorta.service.workflow.user.PatchUserProfileWorkflow;
-import com.sorta.service.workflow.user.RoomInfoProfileWorkflowPatch;
+import com.sorta.service.workflow.user.RoomInfoPatchWorkflow;
 import dagger.Module;
 import dagger.Provides;
 
@@ -22,7 +22,7 @@ public class UserModule {
     public List<PatchUserProfileWorkflow> providePatchUserWorkflows(final DescribeImageProcessor describeImageProcessor,
                                                                     final SpaceDao spaceDao) {
         return ImmutableList.of(
-                new RoomInfoProfileWorkflowPatch(spaceDao),
+                new RoomInfoPatchWorkflow(spaceDao),
                 new AddRoomPhotosPatchWorkflow(describeImageProcessor, spaceDao)
         );
     }

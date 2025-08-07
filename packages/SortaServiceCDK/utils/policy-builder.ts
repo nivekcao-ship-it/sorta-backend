@@ -54,6 +54,7 @@ export class PolicyBuilder {
     return new iam.PolicyStatement({
       actions: [
         'dynamodb:GetItem',
+        'dynamodb:BatchGetItem',
         'dynamodb:PutItem',
         'dynamodb:UpdateItem',
         'dynamodb:DeleteItem',

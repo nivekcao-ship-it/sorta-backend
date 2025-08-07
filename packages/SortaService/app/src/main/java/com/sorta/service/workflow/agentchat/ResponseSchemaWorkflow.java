@@ -23,6 +23,6 @@ public class ResponseSchemaWorkflow implements AgentMessageAugmentationWorkflow 
 
     @Override
     public Boolean shouldRun(final SortaAgentRequest request) {
-        return true;
+        return false;
     }
 }

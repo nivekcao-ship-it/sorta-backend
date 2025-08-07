@@ -27,6 +27,12 @@ import java.util.List;
 @Singleton
 @Log4j2
 public class DescribeImageProcessor {
+    private static final String DEFAULT_PROMPT_INSTRUCTION =
+            """
+            Describe all these images collectively in as much details as possible, focusing on items, room types,
+            and storage areas. Provide a comprehensive overview of what you see across all images. For each item identified,
+            also provide their image coordinate (as percentage of image dimension).
+            """;
 
     private final ObjectMapper objectMapper;
     private final BedrockRuntimeClient bedrockClient;
@@ -69,6 +75,10 @@ public class DescribeImageProcessor {
     }
 
     public String describeImage(final List<String> imageUrls) throws Exception {
+        return describeImage(imageUrls, DEFAULT_PROMPT_INSTRUCTION);
+    }
+
+    public String describeImage(final List<String> imageUrls, final String promptInstruction) throws Exception {
         log.debug("Starting batch image description for {} images", imageUrls.size());
         
         List<BedrockFMRequest.Content> contentList = new ArrayList<>();
@@ -91,7 +101,7 @@ public class DescribeImageProcessor {
         // Add text prompt
         contentList.add(BedrockFMRequest.Content.builder()
             .type("text")
-            .text("Describe all these images collectively, focusing on items, room types, and storage areas. Provide a comprehensive overview of what you see across all images.")
+            .text(promptInstruction)
             .build());
 
         final BedrockFMRequest requestBody = BedrockFMRequest.builder()

@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 
 @Log4j2
 @Singleton
-public class RoomInfoProfileWorkflowPatch implements PatchUserProfileWorkflow {
+public class RoomInfoPatchWorkflow implements PatchUserProfileWorkflow {
     private final SpaceDao spaceDao;
 
     @Inject
-    public RoomInfoProfileWorkflowPatch(SpaceDao spaceDao) {
+    public RoomInfoPatchWorkflow(SpaceDao spaceDao) {
         this.spaceDao = spaceDao;
     }
 

@@ -2,14 +2,9 @@ package com.sorta.service.dagger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
-import com.sorta.service.dao.SpaceDao;
-import com.sorta.service.processors.DescribeImageProcessor;
 import com.sorta.service.workflow.agentchat.AgentMessageAugmentationWorkflow;
 import com.sorta.service.workflow.agentchat.ImageInputWorkflow;
 import com.sorta.service.workflow.agentchat.ResponseSchemaWorkflow;
-import com.sorta.service.workflow.user.AddRoomPhotosPatchWorkflow;
-import com.sorta.service.workflow.user.RoomInfoProfileWorkflowPatch;
-import com.sorta.service.workflow.user.PatchUserProfileWorkflow;
 import dagger.Module;
 import dagger.Provides;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;

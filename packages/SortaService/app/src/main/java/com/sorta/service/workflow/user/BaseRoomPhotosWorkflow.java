@@ -8,12 +8,17 @@ import com.sorta.service.models.userprofile.AddRoomInfoRequest;
 import com.sorta.service.processors.DescribeImageProcessor;
 import lombok.extern.log4j.Log4j2;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 
 @Log4j2
 public abstract class BaseRoomPhotosWorkflow<T> {
+    private static final String ROOM_DESCRIPTION_PROMPT =
+            """
+            Describe all these images collectively in as much details as possible, focusing on room types,
+            and storage areas. Provide a comprehensive overview of what you see across all images.
+            """;
+
     protected final DescribeImageProcessor describeImageProcessor;
     protected final SpaceDao spaceDao;
 
@@ -32,7 +37,7 @@ public abstract class BaseRoomPhotosWorkflow<T> {
         for (final AddRoomInfoRequest roomInfo : roomInfoList) {
             if (roomInfo.getImages() != null && !roomInfo.getImages().isEmpty()) {
                 try {
-                    final String description = describeImageProcessor.describeImage(roomInfo.getImages());
+                    final String description = describeImageProcessor.describeImage(roomInfo.getImages(), ROOM_DESCRIPTION_PROMPT);
                     updateSpaceDescription(user.getUserId(), roomInfo.getId(), description, roomInfo.getImages());
                 } catch (Exception e) {
                     log.error("Failed to describe images for room {}: {}", roomInfo.getId(), e.getMessage(), e);

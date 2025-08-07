@@ -91,8 +91,15 @@ tasks {
         destinationDirectory.set(file("${layout.buildDirectory}/dist"))
     }
 
+    register<JavaExec>("generateSchema") {
+        dependsOn("compileJava")
+        classpath = sourceSets.main.get().runtimeClasspath
+        mainClass.set("com.sorta.service.utils.SchemaGeneratorMain")
+        args = listOf("${layout.buildDirectory.get()}/resources/sorta-agent-message-schema.json")
+    }
+
     build {
-        dependsOn("buildLambdaZip")
+        dependsOn("buildLambdaZip", "generateSchema")
     }
 
     compileJava {
